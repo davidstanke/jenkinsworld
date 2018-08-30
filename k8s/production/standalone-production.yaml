@@ -28,7 +28,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: gcr.io/gcb-codelab/gceme:latest
+        image: gcr.io/cloud-solutions-images/gceme:latest
         resources:
           limits:
             memory: "500Mi"
