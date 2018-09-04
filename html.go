@@ -32,8 +32,7 @@ const (
 <div class="row">
 <div class="col s2">&nbsp;</div>
 <div class="col s8">
-
-
+<h3>{{.Greeting}}</h3>
 <div class="card blue">
 <div class="card-content white-text">
 <div class="card-title">Backend that serviced this request</div>

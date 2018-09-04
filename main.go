@@ -25,11 +25,14 @@ import (
 	"log"
 	"net/http"
 	"net/http/httputil"
+	"os"
+	"strings"
 
 	"cloud.google.com/go/compute/metadata"
 )
 
 type Instance struct {
+	Greeting   string
 	Id         string
 	Name       string
 	Version    string
@@ -43,11 +46,16 @@ type Instance struct {
 	Error      string
 }
 
+var greetings = map[string]string{
+	"en": "Hello, DevOps practitioners!",
+	"fr": "Bonjour, praticiens DevOps!",
+}
+
 const version string = "1.0.0"
 
 func main() {
 	showversion := flag.Bool("version", false, "display version")
-	mode := flag.String("mode", "standalone", "mode to run in [backend (default)|frontend|standalone]")
+	mode := flag.String("mode", "standalone", "mode to run in [backend|frontend|standalone] -- default=standalone")
 	port := flag.Int("port", 8080, "port to bind")
 	backend := flag.String("backend-service", "http://127.0.0.1:8081", "hostname of backend server")
 	flag.Parse()
@@ -156,6 +164,25 @@ func frontendMode(port int, backendURL string) {
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
+func getGreeting() string {
+	locale := os.Getenv("LANG")
+
+	if len(locale) > 0 {
+		// strip the encoding, e.g. 'en_US.UTF-8' --> 'en_US'
+		locale = strings.Split(locale, ".")[0]
+	} else {
+		locale = "en_US"
+	}
+
+	lang := locale[:2] // eg. "en_US" --> "en"
+
+	if lang == "zh" {
+		return "TODO: branch on type of Chinese"
+	} else {
+		return greetings[lang]
+	}
+}
+
 type assigner struct {
 	err error
 }
@@ -173,6 +200,9 @@ func (a *assigner) assign(getVal func() (string, error)) string {
 
 func newInstance() *Instance {
 	var i = new(Instance)
+
+	i.Greeting = getGreeting()
+
 	if !metadata.OnGCE() {
 		i.Error = "Not running on GCE"
 		return i
