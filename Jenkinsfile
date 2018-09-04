@@ -1,7 +1,8 @@
 def project = 'jenkinsworld-demo'
-def  appName = 'gceme'
-def  feSvcName = "${appName}-frontend"
-def  imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+def appName = 'gceme'
+def feSvcName = "${appName}-frontend"
+def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
+def langs = ['en_US','fr_FR']
 
 pipeline {
   agent {
@@ -33,6 +34,11 @@ spec:
     command:
     - cat
     tty: true
+  - name: ubuntu
+    image: ubuntu
+    command:
+    - cat
+    tty: true
 """
 }
   }
@@ -54,6 +60,19 @@ spec:
           sh "PYTHONUNBUFFERED=1 gcloud container builds submit -t ${imageTag} ."
         }
       }
+    }
+    stage('Test Languages') {
+        // Test application in multiple language environments
+        when { branch 'experimental'}
+        steps {
+            echo 'Testing Languages...'
+			// TODO: loop across languages, run a standalone container for each, and test output
+            container('ubuntu') {
+                sh """
+                    pwd
+                """
+            }
+        }
     }
     stage('Deploy Canary') {
       // Canary branch
