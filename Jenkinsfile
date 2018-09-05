@@ -73,14 +73,14 @@ spec:
                     echo 'testing en_US'
                     container('kubectl') {
 			            // Create namespace if it doesn't exist
-			            sh("kubectl get ns ${env.BRANCH_NAME}-${'en_US'.replace('_','-')} || kubectl create ns ${env.BRANCH_NAME}-${'en_US'.replace('_','-')}")
+			            sh("kubectl get ns ${env.BRANCH_NAME}-${'en_US'.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${'en_US'.replace('_','-').toLowerCase()}")
 			            // Don't use public load balancing for development branches
 			            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
 			            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
 			            sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/services/")
 			            sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/dev/")
 			            echo 'To access your environment run `kubectl proxy`'
-			            echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${'en_US'.replace('_','-')}/services/${feSvcName}:80/"
+			            echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${'en_US'.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
 						
                     }
                 }
@@ -90,14 +90,14 @@ spec:
                     echo 'testing fr_FR'
                     container('kubectl') {
 			            // Create namespace if it doesn't exist
-			            sh("kubectl get ns ${env.BRANCH_NAME}-${'fr_FR'.replace('_','-')} || kubectl create ns ${env.BRANCH_NAME}-${'fr_FR'.replace('_','-')}")
+			            sh("kubectl get ns ${env.BRANCH_NAME}-${'fr_FR'.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${'fr_FR'.replace('_','-').toLowerCase()}")
 			            // Don't use public load balancing for development branches
 			            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
 			            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
 			            sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/services/")
 			            sh("kubectl --namespace=${env.BRANCH_NAME} apply -f k8s/dev/")
 			            echo 'To access your environment run `kubectl proxy`'
-			            echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${'fr_FR'.replace('_','-')}/services/${feSvcName}:80/"
+			            echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${'fr_FR'.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
                     }
                 }
             }
