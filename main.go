@@ -58,6 +58,7 @@ func main() {
 	mode := flag.String("mode", "standalone", "mode to run in [backend|frontend|standalone] -- default=standalone")
 	port := flag.Int("port", 8080, "port to bind")
 	backend := flag.String("backend-service", "http://127.0.0.1:8081", "hostname of backend server")
+	locale := os.Getenv("LANG")
 	flag.Parse()
 
 	if *showversion {
@@ -70,21 +71,21 @@ func main() {
 	})
 
 	if *mode == "frontend" {
-		frontendMode(*port, *backend)
+		frontendMode(*port, *backend, locale)
 	} else if *mode == "standalone" {
-		standaloneMode(*port)
+		standaloneMode(*port, locale)
 	} else {
-		backendMode(*port)
+		backendMode(*port, locale)
 	}
 
 }
 
-func standaloneMode(port int) {
+func standaloneMode(port int, locale string) {
 	// this mode serves as a frontend server that handles all logic itself (without need for a separate backend server)
-	log.Println("Operating in standalone mode...")
+	log.Println("Operating in standalone mode w/ locale: " + locale)
 
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		i := newInstance()
+		i := newInstance(locale)
 		tpl := template.Must(template.New("out").Parse(html))
 		raw, _ := httputil.DumpRequest(r, true)
 		i.LBRequest = string(raw)
@@ -97,10 +98,10 @@ func standaloneMode(port int) {
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
-func backendMode(port int) {
-	log.Println("Operating in backend mode...")
+func backendMode(port int, locale string) {
+	log.Println("Operating in backend mode w/ locale: " + locale)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		i := newInstance()
+		i := newInstance(locale)
 		raw, _ := httputil.DumpRequest(r, true)
 		i.LBRequest = string(raw)
 		resp, _ := json.Marshal(i)
@@ -113,8 +114,8 @@ func backendMode(port int) {
 
 }
 
-func frontendMode(port int, backendURL string) {
-	log.Println("Operating in frontend mode...")
+func frontendMode(port int, backendURL string, locale string) {
+	log.Println("Operating in frontend mode w/ locale: " + locale)
 	tpl := template.Must(template.New("out").Parse(html))
 
 	transport := http.Transport{DisableKeepAlives: false}
@@ -164,10 +165,7 @@ func frontendMode(port int, backendURL string) {
 	log.Fatal(http.ListenAndServe(fmt.Sprintf(":%v", port), nil))
 }
 
-func getGreeting() string {
-	locale := os.Getenv("LANG")
-
-	log.Println("setting locale to " + locale)
+func getGreeting(locale string) string {
 
 	if len(locale) > 0 {
 		// strip the encoding, e.g. 'en_US.UTF-8' --> 'en_US'
@@ -200,10 +198,10 @@ func (a *assigner) assign(getVal func() (string, error)) string {
 	return s
 }
 
-func newInstance() *Instance {
+func newInstance(locale string) *Instance {
 	var i = new(Instance)
 
-	i.Greeting = getGreeting()
+	i.Greeting = getGreeting(locale)
 
 	if !metadata.OnGCE() {
 		i.Error = "Not running on GCE"
