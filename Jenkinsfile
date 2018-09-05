@@ -65,17 +65,19 @@ spec:
         // Test application in multiple language environments
         when { branch 'experimental'}
         parallel {
-            stage('test language') {
-                steps {
-                    // TODO: loop across languages, run a standalone container for each, and test output
-                    echo 'testing...'
-                    container('ubuntu') {
-                        sh """
-                            pwd
-                        """
-                    }
-                }
-            }
+			langs.each { lang ->
+	            stage('stage: test ${lang}') {
+	                steps {
+	                    // TODO: loop across languages, run a standalone container for each, and test output
+	                    echo 'testing ${lang}'
+	                    container('ubuntu') {
+	                        sh """
+	                            pwd
+	                        """
+	                    }
+	                }
+	            }
+			}
         }
     }
     stage('Deploy Canary') {
