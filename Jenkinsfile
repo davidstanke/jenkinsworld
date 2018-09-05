@@ -25,6 +25,7 @@ def generateStage(lang) {
 	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
 	            echo 'To access your environment run `kubectl proxy`'
 	            echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
+			}
 		}
 	}
 }
