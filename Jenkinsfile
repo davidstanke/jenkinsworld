@@ -13,23 +13,25 @@ def parallelStagesMap = langs.collectEntries {
 
 def generateStage(lang,feSvcName,imageTag) {
 	return {
-		stage("run as language: ${lang}") {
-            echo "testing ${lang}"
-            container('kubectl') {
-	            // Create namespace if it doesn't exist
-	            sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
-	            // Don't use public load balancing for development branches
-	            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
-	            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
-	            sh("sed -i.bak 's#en_US#${lang}#' ./k8s/dev/*.yaml")
-	            // TODO: wait until apply is complete before moving on
-				sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
-	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
-	            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
+		stage("test language: ${lang}") {
+			stage("create service") {
+	            echo "testing ${lang}"
+	            container('kubectl') {
+		            // Create namespace if it doesn't exist
+		            sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
+		            // Don't use public load balancing for development branches
+		            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
+		            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
+		            sh("sed -i.bak 's#en_US#${lang}#' ./k8s/dev/*.yaml")
+		            // TODO: wait until apply is complete before moving on
+					sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
+		            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
+		            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
+				}
 			}
-		}
-		stage("verify language: ${lang}") {
-			echo "TODO: verify"
+			stage("verify service") {
+				echo "TODO: verify"
+			}
 		}
 	}
 }
