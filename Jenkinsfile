@@ -5,7 +5,7 @@ def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMB
 
 // generate stages for each language
 // (technique adapted from https://stackoverflow.com/questions/46894308/)
-def langs = ['en_US','fr_FR']
+def langs = ['en_US','fr_FR','es_MX','zh_CN','ru_RU']
 
 def parallelStagesMap = langs.collectEntries {
 	["${it}" : generateStage(it,feSvcName,imageTag)]

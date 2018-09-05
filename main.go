@@ -49,6 +49,9 @@ type Instance struct {
 var greetings = map[string]string{
 	"en": "Hello, DevOps practitioners!",
 	"fr": "Bonjour, praticiens DevOps!",
+	"es": "Hola, practicantes de DevOps!",
+	"zh": "你好，DevOps从业者",
+	"ru": "Привет, практикующие DevOps!",
 	"XX": "Error: locale unknown",
 }
 
