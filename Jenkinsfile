@@ -2,7 +2,10 @@ def project = 'jenkinsworld-demo'
 def appName = 'gceme'
 def feSvcName = "${appName}-frontend"
 def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
-def langs = ['en_US','fr_FR']
+
+// def langs = ['en_US','fr_FR']
+
+
 
 pipeline {
   agent {
@@ -65,19 +68,28 @@ spec:
         // Test application in multiple language environments
         when { branch 'experimental'}
         parallel {
-			langs.each { lang ->
-	            stage('stage: test ${lang}') {
-	                steps {
-	                    // TODO: loop across languages, run a standalone container for each, and test output
-	                    echo 'testing ${lang}'
-	                    container('ubuntu') {
-	                        sh """
-	                            pwd
-	                        """
-	                    }
-	                }
-	            }
-			}
+            stage('stage: test en_US') {
+                steps {
+                    // TODO: loop across languages, run a standalone container for each, and test output
+                    echo 'testing en_US'
+                    container('ubuntu') {
+                        sh """
+                            pwd
+                        """
+                    }
+                }
+            }
+            stage('stage: test fr_FR') {
+                steps {
+                    // TODO: loop across languages, run a standalone container for each, and test output
+                    echo 'testing fr_FR'
+                    container('ubuntu') {
+                        sh """
+                            pwd
+                        """
+                    }
+                }
+            }
         }
     }
     stage('Deploy Canary') {
