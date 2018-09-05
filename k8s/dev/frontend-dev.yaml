@@ -42,3 +42,6 @@ spec:
         ports:
         - name: frontend
           containerPort: 80
+        env:
+        - name: LANG
+          value: "en_US"

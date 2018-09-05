@@ -21,7 +21,7 @@ def generateStage(lang,feSvcName,imageTag) {
 	            // Don't use public load balancing for development branches
 	            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
 	            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
-				//sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#gcr.io/jekninsworld-demo/gceme:experimental:latest#' ./k8s/dev/*.yaml")
+	            sh("sed -i.bak 's#en_US#${lang}#' ./k8s/dev/*.yaml")
 	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
 	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
 	            echo 'To access your environment run `kubectl proxy`'
