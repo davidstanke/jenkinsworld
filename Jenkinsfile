@@ -22,10 +22,9 @@ def generateStage(lang,feSvcName,imageTag) {
 	            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
 	            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
 	            sh("sed -i.bak 's#en_US#${lang}#' ./k8s/dev/*.yaml")
-	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
-	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
-	            echo 'To access your environment run `kubectl proxy`'
-	            echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
+	            sh("kubectl wait --for=condition=complete --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
+	            sh("kubectl wait --for=condition=complete --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
+	            echo 'To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
 			}
 		}
 	}
