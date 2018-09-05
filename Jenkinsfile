@@ -64,13 +64,17 @@ spec:
     stage('Test Languages') {
         // Test application in multiple language environments
         when { branch 'experimental'}
-        steps {
-            echo 'Testing Languages...'
-			// TODO: loop across languages, run a standalone container for each, and test output
-            container('ubuntu') {
-                sh """
-                    pwd
-                """
+        parallel {
+            stage('test language') {
+                steps {
+                    // TODO: loop across languages, run a standalone container for each, and test output
+                    echo 'testing...'
+                    container('ubuntu') {
+                        sh """
+                            pwd
+                        """
+                    }
+                }
             }
         }
     }
