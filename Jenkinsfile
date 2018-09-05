@@ -13,7 +13,7 @@ def parallelStagesMap = langs.collectEntries {
 
 def generateStage(lang,feSvcName,imageTag) {
 	return {
-		stage("test language: ${lang}") {
+		stage("run as language: ${lang}") {
             echo "testing ${lang}"
             container('kubectl') {
 	            // Create namespace if it doesn't exist
@@ -26,6 +26,9 @@ def generateStage(lang,feSvcName,imageTag) {
 	            sh("kubectl wait --for=condition=complete --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
 	            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
 			}
+		}
+		stage("verify language: ${lang}") {
+			echo "TODO: verify"
 		}
 	}
 }
