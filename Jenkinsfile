@@ -8,10 +8,10 @@ def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMB
 def langs = ['en_US','fr_FR']
 
 def parallelStagesMap = langs.collectEntries {
-	["${it}" : generateStage(it)]
+	["${it}" : generateStage(it,feSvcName,imageTag)]
 }
 
-def generateStage(lang) {
+def generateStage(lang,feSvcName,imageTag) {
 	return {
 		stage("test language: ${lang}") {
             echo "testing ${lang}"
@@ -20,8 +20,8 @@ def generateStage(lang) {
 	            sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
 	            // Don't use public load balancing for development branches
 	            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
-	            //sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
-				sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#gcr.io/jekninsworld-demo/gceme:experimental:latest#' ./k8s/dev/*.yaml")
+	            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
+				//sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#gcr.io/jekninsworld-demo/gceme:experimental:latest#' ./k8s/dev/*.yaml")
 	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
 	            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
 	            echo 'To access your environment run `kubectl proxy`'
