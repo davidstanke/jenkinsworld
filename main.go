@@ -49,6 +49,7 @@ type Instance struct {
 var greetings = map[string]string{
 	"en": "Hello, DevOps practitioners!",
 	"fr": "Bonjour, praticiens DevOps!",
+	"XX": "Error: locale unknown",
 }
 
 const version string = "1.0.0"
@@ -171,7 +172,7 @@ func getGreeting(locale string) string {
 		// strip the encoding, e.g. 'en_US.UTF-8' --> 'en_US'
 		locale = strings.Split(locale, ".")[0]
 	} else {
-		locale = "en_US"
+		locale = "XX" // unknown
 	}
 
 	lang := locale[:2] // eg. "en_US" --> "en"

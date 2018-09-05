@@ -42,3 +42,6 @@ spec:
         ports:
         - name: backend
           containerPort: 8080
+        env:
+        - name: LANG
+          value: "en_US"
