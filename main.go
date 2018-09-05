@@ -167,6 +167,8 @@ func frontendMode(port int, backendURL string) {
 func getGreeting() string {
 	locale := os.Getenv("LANG")
 
+	log.Println("setting locale to " + locale)
+
 	if len(locale) > 0 {
 		// strip the encoding, e.g. 'en_US.UTF-8' --> 'en_US'
 		locale = strings.Split(locale, ".")[0]
