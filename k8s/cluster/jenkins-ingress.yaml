@@ -9,7 +9,7 @@ spec:
   tls:
   - hosts:
     - example.mydomain.com
-    secretName: hello-app-crt
+    secretName: jenkins-crt
   rules:
   - host: example.mydomain.com
     http:
