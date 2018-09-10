@@ -15,9 +15,10 @@ def generateStage(lang,feSvcName,imageTag) {
 	return {
 		stage("test language: ${lang}") {
 			stage("create service") {
-	            echo "testing ${lang}"
+	            echo "create service: ${lang}"
 	            container('kubectl') {
-		            // Create namespace if it doesn't exist
+		            /*
+					// Create namespace if it doesn't exist
 		            sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
 		            // Don't use public load balancing for development branches
 		            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
@@ -27,6 +28,10 @@ def generateStage(lang,feSvcName,imageTag) {
 					sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
 		            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
 		            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
+					*/
+					
+					sh("kubectl get namespaces")
+					
 				}
 			}
 			stage("verify service") {
