@@ -13,3 +13,6 @@
 
 # Binary produced by `go build`
 jenkinsworld
+
+# Helm binary
+helm
