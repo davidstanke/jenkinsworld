@@ -99,25 +99,9 @@ spec:
       // Test application in multiple language environments, in parallel
       parallel {
          stage("item 1") {
-          container('kubectl') {
-            steps{
+          steps{
+            container('kubectl') {
               echo "I am in item 1"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-        stage("item 2") {
-          container('kubectl') {
-            steps{
-              echo "I am in item 2"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-        stage("item 3") {
-          container('kubectl') {
-            steps{
-              echo "I am in item 3"
               sh("kubectl version --short ")
             }
           }
