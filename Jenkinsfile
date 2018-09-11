@@ -98,13 +98,12 @@ spec:
       }
     }
     stage('Test Languages') {
-        // Test application in multiple language environments, in parallel
-        when { branch 'experimental'}
-        steps {
-			script {
-				parallel parallelStagesMap
-			}
-		}
+      // Test application in multiple language environments, in parallel
+      steps {
+        script {
+          parallel parallelStagesMap
+        }
+      }
     }
     stage('Deploy Canary') {
       // Canary branch
