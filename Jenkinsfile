@@ -17,7 +17,6 @@ def generateStage(lang,feSvcName,imageTag) {
 			stage("create service") {
 	            echo "create service: ${lang}"
 	            container('kubectl') {
-		            /*
 					// Create namespace if it doesn't exist
 		            sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
 		            // Don't use public load balancing for development branches
@@ -27,11 +26,7 @@ def generateStage(lang,feSvcName,imageTag) {
 		            // TODO: wait until apply is complete before moving on
 					sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
 		            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
-		            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
-					*/
-					
-					sh("kubectl get namespaces")
-					
+		            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"					
 				}
 			}
 			stage("verify service") {
