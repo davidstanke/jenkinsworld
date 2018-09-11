@@ -3,6 +3,7 @@ def appName = 'gceme'
 def feSvcName = "${appName}-frontend"
 def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
 
+/*
 // generate stages for each language
 // (technique adapted from https://stackoverflow.com/questions/46894308/)
 def langs = ['en_US','fr_FR','es_MX','zh_CN','ru_RU']
@@ -37,7 +38,7 @@ def generateStage(lang,feSvcName,imageTag) {
 		}
 	}
 }
-
+*/
 
 
 pipeline {
@@ -100,7 +101,36 @@ spec:
     stage('Test Languages') {
       // Test application in multiple language environments, in parallel
       parallel {
-        parallelStagesMap
+         stage("test language: EN_us") {
+          agent{
+            container('kubectl') {}
+          }
+          steps{
+            echo "create service: EN_us"
+            sh("kubectl version --short ")
+            echo "TODO: verify"
+          }
+        }
+        stage("test language: ZH_cn") {
+          agent{
+            container('kubectl') {}
+          }
+          steps{
+            echo "create service: ZH_cn"
+            sh("kubectl version --short ")
+            echo "TODO: verify"
+          }
+        }
+        stage("test language: FR_fr") {
+          agent{
+            container('kubectl') {}
+          }
+          steps{
+            echo "create service: FR_fr"
+            sh("kubectl version --short ")
+            echo "TODO: verify"
+          }
+        }
       }
     }
     stage('Deploy Canary') {
