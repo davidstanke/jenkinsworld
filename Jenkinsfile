@@ -99,7 +99,9 @@ spec:
     }
     stage('Test Languages') {
       // Test application in multiple language environments, in parallel
-      parallel parallelStagesMap
+      parallel {
+        parallelStagesMap
+      }
     }
     stage('Deploy Canary') {
       // Canary branch
