@@ -106,6 +106,38 @@ spec:
             }
           }
         }
+        stage("item 2") {
+          steps{
+            container('kubectl') {
+              echo "I am in item 2"
+              sh("kubectl version --short ")
+            }
+          }
+        }
+        stage("item 3") {
+          steps{
+            container('kubectl') {
+              echo "I am in item 3"
+              sh("kubectl version --short ")
+            }
+          }
+        }
+        stage("item 4") {
+          steps{
+            container('kubectl') {
+              echo "I am in item 4"
+              sh("kubectl version --short ")
+            }
+          }
+        }
+        stage("item 5") {
+          steps{
+            container('kubectl') {
+              echo "I am in item 5"
+              sh("kubectl version --short ")
+            }
+          }
+        }
       }
     }
     stage('Deploy Canary') {
