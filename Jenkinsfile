@@ -102,7 +102,7 @@ spec:
     }
     stage('Test Languages') {
         // Test application in multiple language environments, in parallel
-        when { branch 'experimental'}
+        // when { branch 'experimental'}
         steps {
 			script {
 				parallel parallelStagesMap
