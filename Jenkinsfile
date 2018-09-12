@@ -3,7 +3,6 @@ def appName = 'gceme'
 def feSvcName = "${appName}-frontend"
 def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
 
-/*
 // generate stages for each language
 // (technique adapted from https://stackoverflow.com/questions/46894308/)
 def langs = ['en_US','fr_FR','es_MX','zh_CN','ru_RU']
@@ -15,27 +14,33 @@ def parallelStagesMap = langs.collectEntries {
 def generateStage(lang,feSvcName,imageTag) {
 	return {
 		stage("test language: ${lang}") {
-      agent{
-        container('kubectl') {}
-      }
-      steps{
-        echo "create service: ${lang}"
-        // Create namespace if it doesn't exist
-        sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
-        // Don't use public load balancing for development branches
-        sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
-        sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
-        sh("sed -i.bak 's#en_US#${lang}#' ./k8s/dev/*.yaml")
-        // TODO: wait until apply is complete before moving on
-  sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
-        sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
-        echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"					
-        echo "TODO: verify"
+			stage("create service") {
+	            echo "create service: ${lang}"
+	            container('kubectl') {
+		            /*
+					// Create namespace if it doesn't exist
+		            sh("kubectl get ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} || kubectl create ns ${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}")
+		            // Don't use public load balancing for development branches
+		            sh("sed -i.bak 's#LoadBalancer#ClusterIP#' ./k8s/services/frontend.yaml")
+		            sh("sed -i.bak 's#gcr.io/cloud-solutions-images/gceme:1.0.0#${imageTag}#' ./k8s/dev/*.yaml")
+		            sh("sed -i.bak 's#en_US#${lang}#' ./k8s/dev/*.yaml")
+		            // TODO: wait until apply is complete before moving on
+					sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/services/")
+		            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
+		            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
+					*/
+					
+					sh("kubectl get namespaces")
+					
+				}
+			}
+			stage("verify service") {
+				echo "TODO: verify"
 			}
 		}
 	}
 }
-*/
+
 
 
 pipeline {
@@ -68,31 +73,11 @@ spec:
     command:
     - cat
     tty: true
-  - name: kubectl1
-    image: gcr.io/cloud-builders/kubectl
+  - name: ubuntu
+    image: ubuntu
     command:
     - cat
     tty: true
-  - name: kubectl2
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-  - name: kubectl3
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-  - name: kubectl4
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true
-  - name: kubectl5
-    image: gcr.io/cloud-builders/kubectl
-    command:
-    - cat
-    tty: true    
 """
 }
   }
@@ -116,49 +101,13 @@ spec:
       }
     }
     stage('Test Languages') {
-      // Test application in multiple language environments, in parallel
-      parallel {
-         stage("item 1") {
-          steps{
-            container('kubectl1') {
-              echo "I am in item 1"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-        stage("item 2") {
-          steps{
-            container('kubectl2') {
-              echo "I am in item 2"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-        stage("item 3") {
-          steps{
-            container('kubectl3') {
-              echo "I am in item 3"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-        stage("item 4") {
-          steps{
-            container('kubectl4') {
-              echo "I am in item 4"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-        stage("item 5") {
-          steps{
-            container('kubectl5') {
-              echo "I am in item 5"
-              sh("kubectl version --short ")
-            }
-          }
-        }
-      }
+        // Test application in multiple language environments, in parallel
+        when { branch 'experimental'}
+        steps {
+			script {
+				parallel parallelStagesMap
+			}
+		}
     }
     stage('Deploy Canary') {
       // Canary branch
