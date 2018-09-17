@@ -35,7 +35,9 @@ def generateStage(lang,feSvcName,imageTag) {
 				echo "TODO: test language"
 			}
             stage("teardown resources") {
-                sh("kubectl delete ns ${name_tag}")
+                container('kubectl') {
+                    sh("kubectl delete ns ${name_tag}")
+                }
             }
 		}
 	}
