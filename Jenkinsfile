@@ -81,12 +81,10 @@ spec:
 """
 }
   }
-  /*
   triggers {
     // build every 20 minutes to keep a baseline load
     cron('0 0/20 0 ? * * *')
   }
-  */
   stages {
     stage('Test') {
       steps {
