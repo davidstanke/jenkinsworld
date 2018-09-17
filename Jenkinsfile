@@ -44,6 +44,8 @@ def generateStage(lang,feSvcName,imageTag) {
 
 
 pipeline {
+    // build every 20 min
+  properties([pipelineTriggers([cron('0 0/20 0 ? * * *')])])
   agent {
     kubernetes {
       label 'sample-app'
@@ -80,10 +82,6 @@ spec:
     tty: true
 """
 }
-  }
-  triggers {
-    // build every 20 minutes to keep a baseline load
-    cron(env.BRANCH_NAME == "master" ? "0 0/20 0 ? * * *" : "")
   }
   stages {
     stage('Test') {
