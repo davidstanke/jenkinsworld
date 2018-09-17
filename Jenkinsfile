@@ -81,6 +81,10 @@ spec:
 """
 }
   }
+  triggers {
+    // build every 20 minutes to keep a baseline load
+    cron(env.BRANCH_NAME == 'master' ? '0 0/20 0 ? * * *' : '')
+  }
   stages {
     stage('Test') {
       steps {
