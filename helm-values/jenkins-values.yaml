@@ -10,8 +10,7 @@ Master:
     - blueocean:1.8.2
   Cpu: "1"
   Memory: "3500Mi"
-  JavaOpts: "-Xms3500m -Xmx3500m"
-  ContainerEnv: "JENKINS_JAVA_OPTIONS=-Djava.hudson.slaves.NodeProvisioner.MARGIN=50 -Djava.hudson.slaves.NodeProvisioner.MARGIN0=0.85"
+  JavaOpts: "-Xms3500m -Xmx3500m -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85"
   ServiceType: LoadBalancer
 Agent:
   Enabled: false
