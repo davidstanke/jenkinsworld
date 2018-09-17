@@ -44,7 +44,6 @@ def generateStage(lang,feSvcName,imageTag) {
 
 
 pipeline {
-  properties([pipelineTriggers([cron('H 23 * * *')])])
   agent {
     kubernetes {
       label 'sample-app'
