@@ -1,4 +1,4 @@
-def project = 'jenkinsworld-demo'
+def project = 'jenkinsworld2018'
 def appName = 'gceme'
 def feSvcName = "${appName}-frontend"
 def imageTag = "gcr.io/${project}/${appName}:${env.BRANCH_NAME}.${env.BUILD_NUMBER}"
@@ -29,9 +29,9 @@ def generateStage(lang,feSvcName,imageTag) {
 		            sh("kubectl --namespace=${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()} apply -f k8s/dev/")
 		            echo "To access your environment run `kubectl proxy` then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}-${lang.replace('_','-').toLowerCase()}/services/${feSvcName}:80/"
 					*/
-					
+
 					sh("kubectl get namespaces")
-					
+
 				}
 			}
 			stage("verify service") {
@@ -119,7 +119,7 @@ spec:
           sh("kubectl --namespace=production apply -f k8s/services/")
           sh("kubectl --namespace=production apply -f k8s/canary/")
           sh("echo http://`kubectl --namespace=production get service/${feSvcName} -o jsonpath='{.status.loadBalancer.ingress[0].ip}'` > ${feSvcName}")
-        } 
+        }
       }
     }
     stage('Deploy Production') {
@@ -137,10 +137,10 @@ spec:
     }
     stage('Deploy Dev') {
       // Developer Branches
-      when { 
-        not { branch 'master' } 
+      when {
+        not { branch 'master' }
         not { branch 'canary' }
-      } 
+      }
       steps {
         container('kubectl') {
           // Create namespace if it doesn't exist
@@ -153,7 +153,7 @@ spec:
           echo 'To access your environment run `kubectl proxy`'
           echo "Then access your service via http://localhost:8001/api/v1/proxy/namespaces/${env.BRANCH_NAME}/services/${feSvcName}:80/"
         }
-      }     
+      }
     }
   }
 }
