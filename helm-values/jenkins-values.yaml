@@ -7,7 +7,6 @@ Master:
     - git:3.9.1
     - google-oauth-plugin:0.6
     - google-source-plugin:0.3
-    - pipeline:2.5
     - blueocean:1.8.2
   Cpu: "1"
   Memory: "3500Mi"
